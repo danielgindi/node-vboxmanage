@@ -1,23 +1,23 @@
-# node-vboxmanage
+# vboxmanage.js
 
 [![npm Version](https://badge.fury.io/js/vboxmanage.js.png)](https://npmjs.org/package/vboxmanage.js)
 
 A wrapper for VirtualBox CLI with Promises,
 
-Includes:
+## Includes:
 
 * Full `stdout`/`stderr` output
 * Possibility to run an "unimplemented" vboxmanage feature using the `.manage(...)` call
 * Interfaces for many of the common features like starting/stopping a VM, taking snapshots, running and killing processes, moving/copying files between host and guest etc.
 * Supports both Windows and Linux hosts and guests.
 
-Installation:
+## Installation:
 
 ```
 npm install --save vboxmanage.js
 ```
 
-Usage example:
+## Usage example:
 
 ```javascript
 
