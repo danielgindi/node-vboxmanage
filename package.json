@@ -1,0 +1,32 @@
+{
+  "name": "vboxmanage.js",
+  "version": "1.0.0",
+  "description": "A wrapper for VirtualBox CLI with Promises",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielgindi/node-vboxmanage"
+  },
+  "keywords": [
+    "node.js",
+    "vbox",
+    "virtual box",
+    "vboxmanage",
+    "cli",
+    "promise",
+    "linux",
+    "windows",
+    "cross-platform"
+  ],
+  "author": "Daniel Cohen Gindi <danielgindi@gmail.com> (https://github.com/danielgindi)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielgindi/node-vboxmanage/issues"
+  },
+  "homepage": "https://github.com/danielgindi/node-vboxmanage",
+  "dependencies": {
+  }
+}
