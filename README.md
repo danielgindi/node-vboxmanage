@@ -24,7 +24,7 @@ npm install --save vboxmanage.js
 var VBox = require('vboxmanage.js');
 
 VBox
-  .startvm(['Ubuntu x64"])
+  .startvm(['Ubuntu x64'])
   .then(function () {
     return VBox.execOnVm('Ubuntu x64', 'user', 'password', 'my-program', ['--my-argument', 'another argument']);
   })
