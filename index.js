@@ -155,6 +155,15 @@ VBoxManage.takeSnapshot = function (vmname, snapshotName) {
 
 /**
  * @param {String} vmname
+ * @param {String} snapshotName
+ * @returns {Promise.<{stdout, stderr}>}
+ */
+VBoxManage.restoreSnapshot = function (vmname, snapshotName) {
+    return this.manage(['snapshot', vmname, 'restore', snapshotName]);
+};
+
+/**
+ * @param {String} vmname
  * @returns {Promise.<Object>}
  */
 VBoxManage.getInfo = function (vmname) {
