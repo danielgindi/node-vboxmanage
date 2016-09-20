@@ -355,9 +355,9 @@ VBoxManage.copyToVm = function (vmname, username, password, source, dest, recurs
         args.push('--recursive');
     }
 
-    args = args.concat(source);
+    args.push('--target-directory', dest);
 
-    args.push(dest);
+    args = args.concat(source);
 
     return this.manage(args);
 };
@@ -387,9 +387,9 @@ VBoxManage.copyFromVm = function (vmname, username, password, source, dest, recu
         args.push('--recursive');
     }
 
-    args = args.concat(source);
+    args.push('--target-directory', dest);
 
-    args.push(dest);
+    args = args.concat(source);
 
     return this.manage(args);
 };
