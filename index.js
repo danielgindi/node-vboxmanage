@@ -565,7 +565,7 @@ VBoxManage.stat = function (vmname, username, password, path) {
  * @param {[?]?} params
  * @returns {Promise.<{stdout, stderr}>}
  */
-VBoxManage.execOnVm = function (vmname, username, password, cmd, params) {
+VBoxManage.execOnVm = function (vmname, username, password, cmd, params, async) {
 
     return this
         .getInfo(vmname)
@@ -584,7 +584,11 @@ VBoxManage.execOnVm = function (vmname, username, password, cmd, params) {
                 args.push('--password', '"' + password + '"');
             }
 
-            args.push('run');
+            if (async) {
+                args.push('start');
+            } else {
+                args.push('run');
+            }
 
             if (isWindows) {
                 args.push('--exe', 'cmd.exe', '--', /* arg0 */ 'cmd.exe', /* arg1 */ '/c');
