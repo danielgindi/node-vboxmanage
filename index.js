@@ -281,7 +281,7 @@ VBoxManage.import = function (ovfname, options) {
 
 /**
  * @param {String} vmname
- * @param {String?} gui='headless' - 'headless' or 'gui'
+ * @param {Boolean?} gui=false Should it run with gui or headless mode?
  * @param {Object?} options
  * @returns {Promise.<{stdout, stderr}>}
  */
