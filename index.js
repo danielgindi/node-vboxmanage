@@ -10,7 +10,13 @@ if (/^win/.test(process.platform)) {
 
     // Path may not contain VBoxManage.exe but it provides this environment variable
     var vBoxInstallPath = process.env.VBOX_INSTALL_PATH || process.env.VBOX_MSI_INSTALL_PATH;
-    vBoxManageBinary = '"' + vBoxInstallPath.replace(/\\$/, '') + '\\VBoxManage.exe' + '"';
+
+    if (vBoxInstallPath) {
+        vBoxManageBinary = '"' + vBoxInstallPath.replace(/\\$/, '') + '\\VBoxManage.exe' + '"';
+    } else {
+        console.warn('VBOX_INSTALL_PATH or VBOX_MSI_INSTALL_PATH environment variable is not defined.');
+        vBoxManageBinary = 'VBoxManage.exe';
+    }
 
     escapeArg = function (arg) {
         if (!/\s|[\\"]]/.test(arg)) return arg;
