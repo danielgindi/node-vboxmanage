@@ -27,9 +27,7 @@ if (/^win/.test(process.platform)) {
     vBoxManageBinary = 'vboxmanage';
 
     escapeArg = arg => {
-        if (!/\s|[\\";&]/.test(arg)) return arg;
-
-        return arg.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        return arg.replace(/([ \t\\|;&"`$*])/g, '\\$1');
     };
 }
 
