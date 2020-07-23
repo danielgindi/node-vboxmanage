@@ -343,11 +343,11 @@ VBoxManage.copyToVm = function (vmname, username, password, source, dest, recurs
     let args = ['guestcontrol', vmname, 'copyto'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     if (recursive) {
@@ -375,11 +375,11 @@ VBoxManage.copyFromVm = function (vmname, username, password, source, dest, recu
     let args = ['guestcontrol', vmname, 'copyfrom'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     if (recursive) {
@@ -406,11 +406,11 @@ VBoxManage.mkdir = function (vmname, username, password, path, parents) {
     const args = ['guestcontrol', vmname, 'mkdir'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     if (parents) {
@@ -435,11 +435,11 @@ VBoxManage.rmdir = function (vmname, username, password, path, recursive) {
     const args = ['guestcontrol', vmname, 'rmdir'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     if (recursive) {
@@ -464,11 +464,11 @@ VBoxManage.removeFile = function (vmname, username, password, path, force) {
     const args = ['guestcontrol', vmname, 'removefile'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     if (force) {
@@ -493,11 +493,11 @@ VBoxManage.mv = VBoxManage.move = function (vmname, username, password, source, 
     let args = ['guestcontrol', vmname, 'mv'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     args = args.concat(source);
@@ -519,11 +519,11 @@ VBoxManage.stat = function (vmname, username, password, path) {
     const args = ['guestcontrol', vmname, 'stat'];
 
     if (username) {
-        args.push('--username', '"' + username + '"');
+        args.push('--username', username);
     }
 
     if (password) {
-        args.push('--password', '"' + password + '"');
+        args.push('--password', password);
     }
 
     args.push(path);
@@ -568,11 +568,11 @@ VBoxManage.execOnVm = function (vmname, username, password, cmd, params, async) 
             params = params || [];
 
             if (username) {
-                args.push('--username', '"' + username + '"');
+                args.push('--username', username);
             }
 
             if (password) {
-                args.push('--password', '"' + password + '"');
+                args.push('--password', password);
             }
 
             if (async) {
