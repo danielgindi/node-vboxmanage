@@ -1,15 +1,14 @@
 'use strict';
 
-var
-    child_process = require('child_process'),
-    vBoxManageBinary,
+const ChildProcess = require('child_process');
+let vBoxManageBinary,
     escapeArg;
 
 // Host operating system
 if (/^win/.test(process.platform)) {
 
     // Path may not contain VBoxManage.exe but it provides this environment variable
-    var vBoxInstallPath = process.env.VBOX_INSTALL_PATH || process.env.VBOX_MSI_INSTALL_PATH;
+    const vBoxInstallPath = process.env.VBOX_INSTALL_PATH || process.env.VBOX_MSI_INSTALL_PATH;
 
     if (vBoxInstallPath) {
         vBoxManageBinary = '"' + vBoxInstallPath.replace(/\\$/, '') + '\\VBoxManage.exe' + '"';
@@ -18,7 +17,7 @@ if (/^win/.test(process.platform)) {
         vBoxManageBinary = 'VBoxManage.exe';
     }
 
-    escapeArg = function (arg) {
+    escapeArg = arg => {
         if (!/\s|[\\"&]/.test(arg)) return arg;
 
         return '"' + arg.replace(/"/g, '"""') + '"';
@@ -27,7 +26,7 @@ if (/^win/.test(process.platform)) {
 } else {
     vBoxManageBinary = 'vboxmanage';
 
-    escapeArg = function (arg) {
+    escapeArg = arg => {
         if (!/\s|[\\";&]/.test(arg)) return arg;
 
         return arg.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
@@ -35,7 +34,7 @@ if (/^win/.test(process.platform)) {
 }
 
 
-var VBoxManage = {};
+const VBoxManage = {};
 
 /**
  * Call a VBoxManage command
@@ -46,44 +45,37 @@ var VBoxManage = {};
 VBoxManage.manage = function (command, options) {
 
     command = command || [];
-    if (!(command instanceof Array)) {
-        command = [command];
+    if (!Array.isArray(command)) {
+        command =  /**@type string[]*/[command];
     }
 
     options = options || {};
 
-    for (var i = 0; i < command.length; i++) {
+    for (let i = 0; i < command.length; i++) {
         command[i] = escapeArg(command[i]);
     }
 
-    Object.keys(options).forEach(function (option) {
-
+    for (const [option, value] of Object.entries(options)) {
         command.push('--' + option);
-        var value = options[option];
 
         if (value !== true) {
             command.push(escapeArg(value));
         }
-
-    });
+    }
 
     if (VBoxManage.debug) {
         console.warn("$ VBoxManage " + command.join(" "));
     }
 
-    return new Promise(function (resolve, reject) {
-
-        child_process.exec(vBoxManageBinary + ' ' + command.join(' '), {}, function (err, stdout, stderr) {
-
+    return new Promise((resolve, reject) => {
+        ChildProcess.exec(vBoxManageBinary + ' ' + command.join(' '), {}, (err, stdout, stderr) => {
             if (err) {
                 err.stderr = stderr;
                 return reject(err);
             }
 
-            return resolve({ stdout: stdout, stderr: stderr });
-
+            return resolve({stdout: stdout, stderr: stderr});
         });
-
     });
 };
 
@@ -95,9 +87,9 @@ VBoxManage.manage = function (command, options) {
 VBoxManage.getProperty = function (vmname, propName) {
     return this
         .manage(['guestproperty', 'get', vmname, propName])
-        .then(function (std) {
+        .then(std => {
 
-            var value = std.stdout.substr(std.stdout.indexOf(':') + 1).trim();
+            let value = std.stdout.substr(std.stdout.indexOf(':') + 1).trim();
             if (value === 'No value set!') {
                 value = undefined;
             }
@@ -175,17 +167,17 @@ VBoxManage.restoreSnapshot = function (vmname, snapshotName) {
 VBoxManage.getInfo = function (vmname) {
     return this
         .manage(['showvminfo', vmname], { 'machinereadable': true })
-        .then(function (std) {
+        .then(std => {
 
-            var info = {};
+            const info = {};
 
-            std.stdout.split("\n").forEach(function (line) {
+            for (const line of std.stdout.split("\n")) {
 
                 if (line.length > 0) {
 
-                    var splitPoint = line.indexOf('=');
-                    var key = line.substr(0, splitPoint);
-                    var value = line.substr(splitPoint + 1);
+                    const splitPoint = line.indexOf('=');
+                    let key = line.substr(0, splitPoint);
+                    let value = line.substr(splitPoint + 1);
 
                     if (key[0] === '"' && key[key.length - 1] === '"') {
                         key = key.slice(1, -1);
@@ -200,7 +192,7 @@ VBoxManage.getInfo = function (vmname) {
                     info[key] = value;
                 }
 
-            });
+            }
 
             return info;
         });
@@ -217,12 +209,12 @@ VBoxManage.getIPAddress = function (vmname, timeout) {
         timeout = -1;
     }
 
-    var finishLine = Date.now() + timeout;
-    var retryDuration = 1000;
+    const finishLine = Date.now() + timeout;
+    const retryDuration = 1000;
 
     return this
         .getProperty(vmname, '/VirtualBox/GuestInfo/Net/0/V4/IP')
-        .then(function (address) {
+        .then(address => {
 
             //noinspection JSValidateTypes
             if (address !== undefined ||
@@ -230,11 +222,10 @@ VBoxManage.getIPAddress = function (vmname, timeout) {
                 return address;
             }
 
-            var t;
+            let t;
 
-            return new Promise(function (resolve, reject) {
-
-                t = setTimeout(function () {
+            return new Promise((resolve, reject) => {
+                t = setTimeout(() => {
 
                     if (timeout > -1) {
                         timeout = finishLine - Date.now();
@@ -245,7 +236,6 @@ VBoxManage.getIPAddress = function (vmname, timeout) {
                         .catch(reject);
 
                 }, 1000);
-
             });
 
         });
@@ -268,12 +258,8 @@ VBoxManage.modify = function (vmname, options) {
 VBoxManage.isRegistered = function (vmname) {
     return this
         .getInfo(vmname)
-        .then(function () {
-            return true;
-        })
-        .catch(function () {
-            return false;
-        })
+        .then(() => true)
+        .catch(() => false)
 };
 
 /**
@@ -356,7 +342,7 @@ VBoxManage.acpiSleepButton = function (vmname) {
  */
 VBoxManage.copyToVm = function (vmname, username, password, source, dest, recursive) {
 
-    var args = ['guestcontrol', vmname, 'copyto'];
+    let args = ['guestcontrol', vmname, 'copyto'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -388,7 +374,7 @@ VBoxManage.copyToVm = function (vmname, username, password, source, dest, recurs
  */
 VBoxManage.copyFromVm = function (vmname, username, password, source, dest, recursive) {
 
-    var args = ['guestcontrol', vmname, 'copyfrom'];
+    let args = ['guestcontrol', vmname, 'copyfrom'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -419,7 +405,7 @@ VBoxManage.copyFromVm = function (vmname, username, password, source, dest, recu
  */
 VBoxManage.mkdir = function (vmname, username, password, path, parents) {
 
-    var args = ['guestcontrol', vmname, 'mkdir'];
+    const args = ['guestcontrol', vmname, 'mkdir'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -448,7 +434,7 @@ VBoxManage.mkdir = function (vmname, username, password, path, parents) {
  */
 VBoxManage.rmdir = function (vmname, username, password, path, recursive) {
 
-    var args = ['guestcontrol', vmname, 'rmdir'];
+    const args = ['guestcontrol', vmname, 'rmdir'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -477,7 +463,7 @@ VBoxManage.rmdir = function (vmname, username, password, path, recursive) {
  */
 VBoxManage.removeFile = function (vmname, username, password, path, force) {
 
-    var args = ['guestcontrol', vmname, 'removefile'];
+    const args = ['guestcontrol', vmname, 'removefile'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -506,7 +492,7 @@ VBoxManage.removeFile = function (vmname, username, password, path, force) {
  */
 VBoxManage.mv = VBoxManage.move = function (vmname, username, password, source, dest) {
 
-    var args = ['guestcontrol', vmname, 'mv'];
+    let args = ['guestcontrol', vmname, 'mv'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -532,7 +518,7 @@ VBoxManage.mv = VBoxManage.move = function (vmname, username, password, source, 
  */
 VBoxManage.stat = function (vmname, username, password, path) {
 
-    var args = ['guestcontrol', vmname, 'stat'];
+    const args = ['guestcontrol', vmname, 'stat'];
 
     if (username) {
         args.push('--username', '"' + username + '"');
@@ -545,7 +531,7 @@ VBoxManage.stat = function (vmname, username, password, path) {
     args.push(path);
 
     return this.manage(args)
-        .then(function (std) {
+        .then(std => {
             if (/Is a directory$/g.test(std.stdout)) {
                 return { exists: true, isDirectory: true, isFile: false, isLink: false };
             }
@@ -569,17 +555,18 @@ VBoxManage.stat = function (vmname, username, password, path) {
  * @param {String} username
  * @param {String} password
  * @param {[?]?} params
+ * @param {boolean} [async=false]
  * @returns {Promise.<{stdout, stderr}>}
  */
 VBoxManage.execOnVm = function (vmname, username, password, cmd, params, async) {
 
     return this
         .getInfo(vmname)
-        .then(function (info) {
+        .then(info => {
 
-            var isWindows = /windows/i.test(info['ostype']);
+            const isWindows = /windows/i.test(info['ostype']);
 
-            var args = ['guestcontrol', vmname];
+            const args = ['guestcontrol', vmname];
             params = params || [];
 
             if (username) {
@@ -618,11 +605,11 @@ VBoxManage.execOnVm = function (vmname, username, password, cmd, params, async) 
 VBoxManage.killOnVm = function (vmname, username, password, taskName) {
 
     return this.getInfo(vmname)
-        .then(function (info) {
+        .then(info => {
 
-            var path, params;
+            let path, params;
 
-            var isWindows = /windows/i.test(info['ostype']);
+            const isWindows = /windows/i.test(info['ostype']);
 
             if (isWindows) {
 

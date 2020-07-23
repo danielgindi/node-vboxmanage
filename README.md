@@ -2,7 +2,7 @@
 
 [![npm Version](https://badge.fury.io/js/vboxmanage.js.png)](https://npmjs.org/package/vboxmanage.js)
 
-A wrapper for VirtualBox CLI with Promises,
+A wrapper for VirtualBox CLI with Promises.
 
 ## Includes:
 
