@@ -19,7 +19,7 @@ if (/^win/.test(process.platform)) {
     }
 
     escapeArg = function (arg) {
-        if (!/\s|[\\"]]/.test(arg)) return arg;
+        if (!/\s|[\\"&]/.test(arg)) return arg;
 
         return '"' + arg.replace(/"/g, '"""') + '"';
     };
@@ -28,7 +28,7 @@ if (/^win/.test(process.platform)) {
     vBoxManageBinary = 'vboxmanage';
 
     escapeArg = function (arg) {
-        if (!/\s|[\\"]]/.test(arg)) return arg;
+        if (!/\s|[\\";&]/.test(arg)) return arg;
 
         return arg.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     };
