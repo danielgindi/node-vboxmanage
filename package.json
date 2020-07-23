@@ -1,6 +1,6 @@
 {
   "name": "vboxmanage.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A wrapper for VirtualBox CLI with Promises",
   "main": "index.js",
   "scripts": {
