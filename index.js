@@ -2,7 +2,8 @@
 
 const ChildProcess = require('child_process');
 let vBoxManageBinary,
-    escapeArg;
+    escapeArg,
+    isOptionSafe;
 
 // Host operating system
 if (/^win/.test(process.platform)) {
@@ -23,11 +24,19 @@ if (/^win/.test(process.platform)) {
         return '"' + arg.replace(/"/g, '"""') + '"';
     };
 
+    isOptionSafe = opt => {
+        return !/\s|[\\"&]/.test(opt);
+    };
+
 } else {
     vBoxManageBinary = 'vboxmanage';
 
     escapeArg = arg => {
         return arg.replace(/([ \t\\|;&"`$*])/g, '\\$1');
+    };
+
+    isOptionSafe = opt => {
+        return !/([ \t\\|;&"`$*])/.test(opt);
     };
 }
 
@@ -54,6 +63,9 @@ VBoxManage.manage = function (command, options) {
     }
 
     for (const [option, value] of Object.entries(options)) {
+        if (!isOptionSafe(option))
+            throw new Error('An unsafe option was passed to VBoxManage.manage: ' + option);
+
         command.push('--' + option);
 
         if (value !== true) {
